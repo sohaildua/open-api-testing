@@ -6,3 +6,4 @@ pluginManagement {
     }
 }
 rootProject.name = 'openapi-swagger'
+include 'openapi-swagger:open-api-spec'
