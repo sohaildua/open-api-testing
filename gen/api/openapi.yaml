@@ -1,0 +1,74 @@
+openapi: 3.0.0
+info:
+  contact:
+    email: antonie.zafirov@north-47.com
+  description: Codegen for demo service
+  title: Demo Service Specification
+  version: 0.0.1
+servers:
+- description: local host
+  url: http://localhost:8000/
+tags:
+- description: User tag for demo purposes
+  name: user
+paths:
+  /user/{id}:
+    get:
+      operationId: getUserById
+      parameters:
+      - description: retrieves user by user id
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          format: int64
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: Retrieves family members by person id
+      summary: Retrieves User by ID
+      tags:
+      - user
+      x-accepts: application/json
+components:
+  schemas:
+    User:
+      example:
+        firstName: John
+        lastName: Smith
+        gender: MALE
+        dateOfBirth: 1992-10-05
+        id: 0
+      properties:
+        id:
+          format: int64
+          type: integer
+        firstName:
+          example: John
+          type: string
+        lastName:
+          example: Smith
+          type: string
+        dateOfBirth:
+          example: 1992-10-05
+          type: string
+        gender:
+          enum:
+          - MALE
+          - FEMALE
+          - UNKNOWN
+          type: string
+      required:
+      - dateOfBirth
+      - firstName
+      - gender
+      - id
+      - lastName
+      type: object
+
