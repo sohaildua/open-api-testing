@@ -1,29 +1,64 @@
-plugins {
-    id 'java'
-    id 'org.springframework.boot' version '3.2.1-SNAPSHOT'
-    id 'io.spring.dependency-management' version '1.1.4'
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "org.openapitools:openapi-generator-gradle-plugin:4.3.1"
+    }
 }
 
-group = 'openapi'
-version = '0.0.1-SNAPSHOT'
-
-java {
-    sourceCompatibility = '17'
-    targetCompatibility = '17'
+plugins {
+    id 'org.springframework.boot' version '3.2.0'
+    id 'io.spring.dependency-management' version '1.1.4'
+    id 'java'
+    id 'org.openapi.generator' version '5.2.1'
 }
 
 repositories {
     mavenCentral()
-    maven { url 'https://repo.spring.io/milestone' }
-    maven { url 'https://repo.spring.io/snapshot' }
 }
 
 dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
+    implementation 'io.springfox:springfox-swagger2:3.0.0'
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
+def specFolder = "$projectDir/src/main/resources/spec"
+def openApiSpecFiles = fileTree(specFolder).include('**/*.yaml')
+
+tasks.openApiGenerate {
+    inputSpec = openApiSpecFiles.collect { it.toString() }
+}
+
+openApiSpecFiles.each { specFile ->
+    def specFileName = specFile.name.replaceAll('\\.yaml', '')
+
+    task("generate${specFileName.capitalize()}Code", type: org.openapitools.generator.gradle.plugin.tasks.GenerateTask) {
+        description "Generates code for the OpenAPI Specification: ${specFile.name}"
+        group 'code generation'
+
+        generatorName = 'spring'
+        outputDir = "$projectDir/generated" // Set the output directory as needed
+        apiPackage = "alwaysbemark.example.api"
+        modelPackage = "alwaysbemark.example.model"
+        configOptions = [
+                interfaceOnly: "true",
+                openApiNullable: "false",
+                skipDefaultInterface: "true"
+        ]
+        globalProperties = [
+                apis: "",
+                models: ""
+        ]
+    }
+}
+
+task generateAllCode {
+    description "Generates code for all OpenAPI Specifications"
+    group 'code generation'
+
+    dependsOn tasks.matching { task -> task.name.startsWith("generate") }
 }
