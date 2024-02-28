@@ -32,7 +32,7 @@ def openApiSpecFiles = fileTree(specFolder).include('**/*.yaml')
 tasks.openApiGenerate {
     inputSpec = openApiSpecFiles.collect { it.toString() }
 }
-
+/// fix this
 openApiSpecFiles.each { specFile ->
     def specFileName = specFile.name.replaceAll('\\.yaml', '')
 
