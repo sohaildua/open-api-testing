@@ -45,12 +45,12 @@ openApiSpecFiles.each { specFile ->
         apiPackage = "alwaysbemark.example.api"
         modelPackage = "alwaysbemark.example.model"
         configOptions = [
-                interfaceOnly: "true",
-                openApiNullable: "false",
+                interfaceOnly       : "true",
+                openApiNullable     : "false",
                 skipDefaultInterface: "true"
         ]
         globalProperties = [
-                apis: "",
+                apis  : "",
                 models: ""
         ]
     }
